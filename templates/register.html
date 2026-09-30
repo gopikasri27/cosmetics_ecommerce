@@ -1,0 +1,106 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create your Glow &amp; Grace account">
+    <title>Register | Glow &amp; Grace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="nav-left">
+        <a href="{% url 'home' %}" class="logo">Glow &amp; Grace</a>
+    </div>
+
+    <div class="nav-links">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'home' %}#categories">Categories</a>
+        <a href="{% url 'home' %}#shop">Shop</a>
+        <a href="{% url 'cart' %}">Cart</a>
+    </div>
+
+    <div class="nav-icons">
+        <a href="{% url 'cart' %}" class="cart-icon-wrapper" aria-label="Cart">
+            🛍️
+            {% if cart_count > 0 %}
+            <span class="cart-count">{{ cart_count }}</span>
+            {% endif %}
+        </a>
+    </div>
+
+</nav>
+
+
+<!-- REGISTER SECTION -->
+
+<section class="auth-page">
+
+    <div class="auth-card">
+
+        <h1>Create Account</h1>
+
+        <p class="auth-subtitle">Join Glow &amp; Grace for exclusive beauty deals</p>
+
+
+        <!-- MESSAGES -->
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="auth-message">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+
+        <!-- REGISTER FORM -->
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="auth-form-group">
+                <label for="id_reg_username">Username</label>
+                <input type="text" id="id_reg_username" name="username" placeholder="Choose a username" required autocomplete="username">
+            </div>
+
+            <div class="auth-form-group">
+                <label for="id_reg_email">Email Address</label>
+                <input type="email" id="id_reg_email" name="email" placeholder="Enter your email" autocomplete="email">
+            </div>
+
+            <div class="auth-form-group">
+                <label for="id_reg_password">Password</label>
+                <input type="password" id="id_reg_password" name="password" placeholder="Create a password" required autocomplete="new-password">
+            </div>
+
+            <button type="submit" class="login-submit">Create Account</button>
+
+        </form>
+
+
+        <div class="register-link">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+
+        <div class="back-home">
+            <a href="{% url 'home' %}">← Back to Home</a>
+        </div>
+
+    </div>
+
+</section>
+
+
+</body>
+</html>

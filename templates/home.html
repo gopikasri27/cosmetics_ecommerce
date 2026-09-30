@@ -1,0 +1,724 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Glow & Grace - Your premium cosmetics destination for makeup, skincare, lipsticks, perfumes and more.">
+    <title>Glow &amp; Grace | Premium Cosmetics Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-left">
+        <a href="{% url 'home' %}" class="logo">Glow &amp; Grace</a>
+    </div>
+
+    <div class="nav-links" id="navLinks">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#shop">Shop</a>
+        <a href="#offers">Offers</a>
+        <a href="#about">About</a>
+    </div>
+
+    <div class="nav-icons">
+
+        <button type="button" class="nav-icon-button" id="searchToggleBtn" aria-label="Search">
+            🔍
+        </button>
+
+        {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}" class="nav-icon-link" aria-label="Logout" title="Logout {{ user.username }}">
+            👤
+        </a>
+        {% else %}
+        <a href="{% url 'login' %}" class="nav-icon-link" aria-label="Login">
+            👤
+        </a>
+        {% endif %}
+
+        <a href="{% url 'cart' %}" class="cart-icon-wrapper" aria-label="Shopping Cart">
+            🛍️
+            {% if cart_count > 0 %}
+            <span class="cart-count">{{ cart_count }}</span>
+            {% endif %}
+        </a>
+
+        <button type="button" class="nav-toggle" id="navToggle" aria-label="Menu">☰</button>
+
+    </div>
+
+</nav>
+
+
+<!-- =====================================================
+     DJANGO MESSAGES
+===================================================== -->
+
+{% if messages %}
+<div class="message-container" id="messageContainer">
+    {% for message in messages %}
+    <div class="site-message {{ message.tags }}">
+        <span>{{ message }}</span>
+        <button type="button" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+
+        <span class="hero-small-title">GLOW &amp; GRACE BEAUTY</span>
+
+        <h1>
+            Beauty That<br>
+            <span>Feels Like You</span>
+        </h1>
+
+        <p>
+            Discover carefully selected makeup, skincare and beauty
+            essentials made for your everyday glow.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#shop" class="hero-button">Shop Collection</a>
+            <a href="#categories" class="hero-outline-button">Explore Categories</a>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     CATEGORIES
+===================================================== -->
+
+<section class="section categories-section" id="categories">
+
+    <div class="section-header">
+        <span class="section-label">EXPLORE</span>
+        <h2>Shop By Category</h2>
+        <p>Find everything you need for your beauty routine.</p>
+    </div>
+
+    <div class="category-grid">
+
+        <!-- MAKEUP -->
+        <div class="category-card" onclick="openCategory('Makeup')" role="button" tabindex="0" aria-label="Explore Makeup">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80" alt="Makeup" id="img-makeup">
+            </div>
+            <div class="category-content">
+                <h3>Makeup</h3>
+                <p>Create your perfect look</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- SKINCARE -->
+        <div class="category-card" onclick="openCategory('Skincare')" role="button" tabindex="0" aria-label="Explore Skincare">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80" alt="Skincare" id="img-skincare">
+            </div>
+            <div class="category-content">
+                <h3>Skincare</h3>
+                <p>Nourish and protect your skin</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- LIPSTICKS -->
+        <div class="category-card" onclick="openCategory('Lipsticks')" role="button" tabindex="0" aria-label="Explore Lipsticks">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=600&q=80" alt="Lipsticks" id="img-lipsticks">
+            </div>
+            <div class="category-content">
+                <h3>Lipsticks</h3>
+                <p>Shades for every mood</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- EYE MAKEUP -->
+        <div class="category-card" onclick="openCategory('Eye Makeup')" role="button" tabindex="0" aria-label="Explore Eye Makeup">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1583001931096-959e9a1a6223?auto=format&fit=crop&w=600&q=80" alt="Eye Makeup" id="img-eyemakeup">
+            </div>
+            <div class="category-content">
+                <h3>Eye Makeup</h3>
+                <p>Define your beautiful eyes</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- HAIR CARE -->
+        <div class="category-card" onclick="openCategory('Hair Care')" role="button" tabindex="0" aria-label="Explore Hair Care">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=600&q=80" alt="Hair Care" id="img-haircare">
+            </div>
+            <div class="category-content">
+                <h3>Hair Care</h3>
+                <p>Healthy and beautiful hair</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- PERFUMES -->
+        <div class="category-card" onclick="openCategory('Perfumes')" role="button" tabindex="0" aria-label="Explore Perfumes">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?auto=format&fit=crop&w=600&q=80" alt="Perfumes" id="img-perfumes">
+            </div>
+            <div class="category-content">
+                <h3>Perfumes</h3>
+                <p>Find your signature scent</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- BODY CARE -->
+        <div class="category-card" onclick="openCategory('Body Care')" role="button" tabindex="0" aria-label="Explore Body Care">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=600&q=80" alt="Body Care" id="img-bodycare">
+            </div>
+            <div class="category-content">
+                <h3>Body Care</h3>
+                <p>Everyday self-care essentials</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+        <!-- NAIL CARE -->
+        <div class="category-card" onclick="openCategory('Nail Care')" role="button" tabindex="0" aria-label="Explore Nail Care">
+            <div class="category-image">
+                <img src="https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=600&q=80" alt="Nail Care" id="img-nailcare">
+            </div>
+            <div class="category-content">
+                <h3>Nail Care</h3>
+                <p>Complete your beauty look</p>
+                <span>Explore →</span>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FEATURED PRODUCTS
+===================================================== -->
+
+<section class="section products-section" id="shop">
+
+    <div class="section-header">
+        <span class="section-label">OUR COLLECTION</span>
+        <h2>Featured Products</h2>
+        <p>Beauty essentials selected especially for you.</p>
+    </div>
+
+    <div class="product-grid">
+
+        {% for product in products %}
+
+        <div class="product-card">
+
+            <div class="product-image-wrapper">
+
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                {% elif product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image" loading="lazy">
+                {% else %}
+                <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80" alt="{{ product.name }}" class="product-image" loading="lazy">
+                {% endif %}
+
+                {% if product.stock > 0 %}
+                <span class="product-stock-badge">In Stock</span>
+                {% else %}
+                <span class="product-stock-badge out">Out of Stock</span>
+                {% endif %}
+
+            </div>
+
+            <div class="product-info">
+
+                <span class="product-category">{{ product.category.name }}</span>
+
+                <h3>{{ product.name }}</h3>
+
+                <p class="product-description">{{ product.description }}</p>
+
+                <div class="product-bottom">
+                    <div>
+                        <span class="product-price">₹{{ product.price }}</span>
+                        {% if product.stock > 0 %}
+                        <small>{{ product.stock }} available</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if product.stock > 0 %}
+                <div class="product-actions">
+
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="add-cart-button">🛍 Add to Cart</button>
+                    </form>
+
+                    <a href="{% url 'buy_now' product.id %}" class="buy-now-button">Buy Now</a>
+
+                </div>
+                {% else %}
+                <button type="button" class="disabled-product-button" disabled>Out of Stock</button>
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="no-products">
+            <div class="no-products-icon">✨</div>
+            <h3>No products available</h3>
+            <p>Run <code>python manage.py seed_products</code> to add demo products.</p>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     OFFER
+===================================================== -->
+
+<section class="offer-section" id="offers">
+    <div class="offer-content">
+
+        <span class="section-label">SPECIAL OFFER</span>
+
+        <h2>Glow More,<br>Save More.</h2>
+
+        <p>
+            Get 10% off your beauty essentials with our exclusive offer.
+            Use code below at checkout.
+        </p>
+
+        <div class="coupon-display">
+            <span>USE CODE</span>
+            <strong>GLOW10</strong>
+        </div>
+
+        <a href="#shop" class="offer-button">Shop Offers →</a>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     ABOUT
+===================================================== -->
+
+<section class="about-section" id="about">
+    <div class="about-container">
+
+        <div class="about-image">
+            <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?auto=format&fit=crop&w=800&q=85" alt="Beauty" loading="lazy">
+        </div>
+
+        <div class="about-content">
+
+            <span class="section-label">ABOUT US</span>
+
+            <h2>Beauty Made<br>Simple.</h2>
+
+            <p>
+                Glow &amp; Grace is your everyday destination for makeup,
+                skincare, lipsticks, perfumes and self-care essentials.
+            </p>
+
+            <p>
+                We believe beauty should feel simple, comfortable
+                and completely yours.
+            </p>
+
+            <a href="#shop" class="about-button">Explore Products →</a>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <div class="footer-container">
+
+        <div class="footer-brand">
+            <a href="{% url 'home' %}" class="footer-logo">Glow &amp; Grace</a>
+            <p>Your everyday destination for beauty and self-care.</p>
+        </div>
+
+        <div class="footer-column">
+            <h3>Shop</h3>
+            <a href="#categories">Categories</a>
+            <a href="#shop">Products</a>
+            <a href="#offers">Offers</a>
+        </div>
+
+        <div class="footer-column">
+            <h3>Account</h3>
+            {% if user.is_authenticated %}
+            <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+            <a href="{% url 'cart' %}">Cart</a>
+        </div>
+
+        <div class="footer-column">
+            <h3>Support</h3>
+            <a href="#">Contact</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms</a>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <span>© 2026 Glow &amp; Grace</span>
+        <span>All rights reserved.</span>
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     SEARCH POPUP
+===================================================== -->
+
+<div class="search-popup" id="searchPopup">
+    <div class="search-box">
+
+        <button type="button" class="close-search" id="closeSearchBtn" aria-label="Close search">×</button>
+
+        <span>SEARCH GLOW &amp; GRACE</span>
+        <h2>Find Your Beauty</h2>
+
+        <input type="text" id="searchInput" placeholder="Search products..." autocomplete="off">
+
+    </div>
+</div>
+
+
+<!-- =====================================================
+     CATEGORY MODAL
+===================================================== -->
+
+<div class="category-modal" id="categoryModal">
+
+    <div class="category-modal-content">
+
+        <div class="category-modal-header">
+            <div>
+                <span class="modal-small-title">GLOW &amp; GRACE</span>
+                <h2 id="categoryTitle">Products</h2>
+            </div>
+            <button type="button" class="close-category" id="closeCategoryBtn" aria-label="Close">×</button>
+        </div>
+
+        <div class="category-product-grid" id="categoryProducts">
+
+            {% for product in products %}
+
+            <div class="category-product-card" data-category="{{ product.category.name }}">
+
+                <div class="category-image-wrapper">
+
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="category-product-image" loading="lazy">
+                    {% elif product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="category-product-image" loading="lazy">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80" alt="{{ product.name }}" class="category-product-image" loading="lazy">
+                    {% endif %}
+
+                    {% if product.stock > 0 %}
+                    <span class="category-stock-badge">In Stock</span>
+                    {% else %}
+                    <span class="category-stock-badge out">Out of Stock</span>
+                    {% endif %}
+
+                </div>
+
+                <div class="category-product-info">
+
+                    <span class="category-product-category">{{ product.category.name }}</span>
+
+                    <h3>{{ product.name }}</h3>
+
+                    <p class="category-product-description">{{ product.description }}</p>
+
+                    <div class="category-price-row">
+                        <strong class="category-product-price">₹{{ product.price }}</strong>
+                    </div>
+
+                    {% if product.stock > 0 %}
+
+                    <span class="category-stock-text">{{ product.stock }} items available</span>
+
+                    <div class="category-product-actions">
+
+                        <form method="post" action="{% url 'add_to_cart' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="category-add-cart">🛍 Add to Cart</button>
+                        </form>
+
+                        <a href="{% url 'buy_now' product.id %}" class="category-buy-now">Buy Now</a>
+
+                    </div>
+
+                    {% else %}
+
+                    <button type="button" class="category-disabled-button" disabled>Out of Stock</button>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <div id="categoryEmpty" class="category-empty" style="display:none;">
+            <div class="empty-icon">✨</div>
+            <h3>No products in this category</h3>
+            <p>Add products from Django Admin or run the seed command.</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+/* =====================================================
+   IMAGE FALLBACK
+===================================================== */
+
+var FALLBACK_IMG = "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&q=80";
+
+function setupImageFallbacks() {
+    var images = document.querySelectorAll("img");
+    images.forEach(function(img) {
+        img.addEventListener("error", function() {
+            if (!this.dataset.fallbackApplied) {
+                this.dataset.fallbackApplied = "true";
+                this.src = FALLBACK_IMG;
+            }
+        });
+    });
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+var searchPopup = document.getElementById("searchPopup");
+var searchInput = document.getElementById("searchInput");
+var searchToggleBtn = document.getElementById("searchToggleBtn");
+var closeSearchBtn = document.getElementById("closeSearchBtn");
+
+if (searchToggleBtn) {
+    searchToggleBtn.addEventListener("click", function() {
+        searchPopup.style.display = "flex";
+        document.body.style.overflow = "hidden";
+        setTimeout(function() {
+            if (searchInput) searchInput.focus();
+        }, 100);
+    });
+}
+
+if (closeSearchBtn) {
+    closeSearchBtn.addEventListener("click", function() {
+        searchPopup.style.display = "none";
+        document.body.style.overflow = "";
+    });
+}
+
+if (searchPopup) {
+    searchPopup.addEventListener("click", function(e) {
+        if (e.target === searchPopup) {
+            searchPopup.style.display = "none";
+            document.body.style.overflow = "";
+        }
+    });
+}
+
+if (searchInput) {
+    searchInput.addEventListener("input", function() {
+        var val = this.value.toLowerCase().trim();
+        var cards = document.querySelectorAll(".product-card");
+        cards.forEach(function(card) {
+            var text = card.innerText.toLowerCase();
+            card.style.display = (val === "" || text.includes(val)) ? "" : "none";
+        });
+    });
+}
+
+
+/* =====================================================
+   MOBILE NAV TOGGLE
+===================================================== */
+
+var navToggle = document.getElementById("navToggle");
+var navLinks = document.getElementById("navLinks");
+
+if (navToggle) {
+    navToggle.addEventListener("click", function() {
+        navLinks.classList.toggle("open");
+    });
+}
+
+
+/* =====================================================
+   CATEGORY MODAL
+===================================================== */
+
+var categoryModal = document.getElementById("categoryModal");
+var categoryTitle = document.getElementById("categoryTitle");
+var categoryEmpty = document.getElementById("categoryEmpty");
+var categoryProducts = document.getElementById("categoryProducts");
+var closeCategoryBtn = document.getElementById("closeCategoryBtn");
+
+function openCategory(category) {
+    if (!categoryModal) return;
+
+    categoryTitle.textContent = category;
+
+    var normalizedTarget = category.trim().toLowerCase();
+    var cards = document.querySelectorAll(".category-product-card");
+    var found = 0;
+
+    cards.forEach(function(card) {
+        var cardCat = (card.getAttribute("data-category") || "").trim().toLowerCase();
+        if (cardCat === normalizedTarget) {
+            card.style.display = "flex";
+            card.style.flexDirection = "column";
+            found++;
+        } else {
+            card.style.display = "none";
+        }
+    });
+
+    categoryEmpty.style.display = (found === 0) ? "block" : "none";
+    categoryProducts.style.display = (found === 0) ? "none" : "grid";
+
+    categoryModal.style.display = "flex";
+    document.body.style.overflow = "hidden";
+}
+
+function closeCategory() {
+    if (categoryModal) {
+        categoryModal.style.display = "none";
+        document.body.style.overflow = "";
+    }
+}
+
+if (closeCategoryBtn) {
+    closeCategoryBtn.addEventListener("click", closeCategory);
+}
+
+if (categoryModal) {
+    categoryModal.addEventListener("click", function(e) {
+        if (e.target === categoryModal) closeCategory();
+    });
+}
+
+/* keyboard accessibility for category cards */
+document.querySelectorAll(".category-card").forEach(function(card) {
+    card.addEventListener("keydown", function(e) {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            card.click();
+        }
+    });
+});
+
+
+/* =====================================================
+   ESCAPE KEY
+===================================================== */
+
+document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closeCategory();
+        if (searchPopup) {
+            searchPopup.style.display = "none";
+            document.body.style.overflow = "";
+        }
+    }
+});
+
+
+/* =====================================================
+   AUTO HIDE MESSAGES
+===================================================== */
+
+setTimeout(function() {
+    var msgs = document.querySelectorAll(".site-message");
+    msgs.forEach(function(m) {
+        m.style.opacity = "0";
+        setTimeout(function() { m.remove(); }, 420);
+    });
+}, 4000);
+
+
+/* =====================================================
+   PAGE LOAD
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function() {
+    setupImageFallbacks();
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Order Placed Successfully - Glow &amp; Grace">
+    <title>Order Confirmed | Glow &amp; Grace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<div class="success-page">
+
+    <div class="success-card">
+
+        <!-- SUCCESS ICON -->
+        <div class="success-icon">✓</div>
+
+        <p class="eyebrow">ORDER CONFIRMED</p>
+
+        <h1>Order Placed<br>Successfully!</h1>
+
+        <p>Thank you for shopping with Glow &amp; Grace. We'll get your order ready soon.</p>
+
+        <!-- ORDER NUMBER -->
+        <div class="order-number">Order #{{ order.id }}</div>
+
+        <!-- ORDER DETAILS -->
+        <div class="success-details">
+
+            <div>
+                <span>Customer</span>
+                <strong>{{ order.full_name }}</strong>
+            </div>
+
+            <div>
+                <span>Total Amount</span>
+                <strong>₹{{ order.total }}</strong>
+            </div>
+
+            <div>
+                <span>Payment Method</span>
+                <strong>{{ order.get_payment_method_display }}</strong>
+            </div>
+
+            <div>
+                <span>Order Status</span>
+                <strong>{{ order.get_status_display }}</strong>
+            </div>
+
+            <div>
+                <span>Delivery To</span>
+                <strong>{{ order.city }}, {{ order.state }} – {{ order.pincode }}</strong>
+            </div>
+
+            {% if order.coupon_code %}
+            <div>
+                <span>Coupon Applied</span>
+                <strong style="color:#2d6a4f;">{{ order.coupon_code }}</strong>
+            </div>
+            {% endif %}
+
+        </div>
+
+        <!-- ESTIMATED DELIVERY -->
+        <div class="success-delivery-msg">
+            📦 Estimated delivery: 3–5 working days
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="success-actions">
+
+            <a href="{% url 'home' %}" class="success-primary-btn">
+                Continue Shopping
+            </a>
+
+            <a href="{% url 'cart' %}" class="success-secondary-btn">
+                View Cart
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

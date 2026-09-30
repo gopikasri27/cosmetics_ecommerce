@@ -1,0 +1,219 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your Shopping Cart - Glow &amp; Grace Cosmetics">
+    <title>Shopping Cart | Glow &amp; Grace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="simple-header">
+    <a href="{% url 'home' %}" class="simple-logo">Glow &amp; <span>Grace</span></a>
+    <div style="display:flex;align-items:center;gap:18px;">
+        {% if user.is_authenticated %}
+        <span style="font-size:13px;color:#888;">Hi, {{ user.username }}</span>
+        <a href="{% url 'logout' %}" style="font-size:13px;color:#666;">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+        <a href="{% url 'home' %}">Continue Shopping</a>
+    </div>
+</header>
+
+
+<!-- MESSAGES -->
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+    <div class="site-message {{ message.tags }}">
+        <span>{{ message }}</span>
+        <button type="button" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- PAGE TITLE -->
+
+<div class="page-title">
+    <p class="eyebrow">YOUR SHOPPING BAG</p>
+    <h1>Shopping Cart</h1>
+</div>
+
+
+<!-- MAIN -->
+
+<main class="cart-page">
+
+    {% if cart_items %}
+
+    <div class="cart-layout">
+
+
+        <!-- =====================
+             CART ITEMS
+        ===================== -->
+
+        <div class="cart-items">
+
+            {% for item in cart_items %}
+
+            <div class="cart-item">
+
+                <!-- PRODUCT IMAGE -->
+
+                <div class="cart-item-image">
+                    {% if item.product.image_url %}
+                    <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" id="cart-img-{{ item.product.id }}">
+                    {% elif item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" id="cart-img-{{ item.product.id }}">
+                    {% else %}
+                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=300&q=80" alt="{{ item.product.name }}" id="cart-img-{{ item.product.id }}">
+                    {% endif %}
+                </div>
+
+
+                <!-- PRODUCT DETAILS -->
+
+                <div class="cart-item-details">
+
+                    <span class="cart-item-cat">{{ item.product.category.name }}</span>
+
+                    <h3>{{ item.product.name }}</h3>
+
+                    <span class="cart-item-price">₹{{ item.product.price }}</span>
+
+                    <!-- QUANTITY -->
+
+                    <form method="post" action="{% url 'update_cart' item.product.id %}" class="quantity-form">
+                        {% csrf_token %}
+
+                        <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" class="qty-btn" aria-label="Decrease quantity">−</button>
+
+                        <span class="qty-display">{{ item.quantity }}</span>
+
+                        <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" class="qty-btn" aria-label="Increase quantity">+</button>
+
+                    </form>
+
+                    <!-- REMOVE -->
+
+                    <a href="{% url 'remove_from_cart' item.product.id %}" class="remove-item">Remove</a>
+
+                </div>
+
+
+                <!-- ITEM TOTAL -->
+
+                <div class="cart-item-total">
+                    <span style="font-size:11px;color:#aaa;display:block;margin-bottom:2px;">Item Total</span>
+                    ₹{{ item.total }}
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <!-- =====================
+             ORDER SUMMARY
+        ===================== -->
+
+        <aside class="cart-summary">
+
+            <h2>Order Summary</h2>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <strong>₹{{ subtotal }}</strong>
+            </div>
+
+            <div class="summary-row">
+                <span>Delivery</span>
+                <strong>
+                    {% if delivery_fee == 0 %}
+                    <span style="color:#2d6a4f;">FREE</span>
+                    {% else %}
+                    ₹{{ delivery_fee }}
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="summary-note">
+                🚚 Free delivery on orders above ₹999
+            </div>
+
+            <hr class="summary-divider">
+
+            <div class="summary-total">
+                <span>Total</span>
+                <strong>₹{{ total }}</strong>
+            </div>
+
+            <a href="{% url 'checkout' %}" class="checkout-button">
+                Proceed to Checkout →
+            </a>
+
+            <a href="{% url 'home' %}" class="continue-shopping-btn">
+                ← Continue Shopping
+            </a>
+
+        </aside>
+
+    </div>
+
+
+    {% else %}
+
+    <!-- EMPTY CART -->
+
+    <div class="empty-cart">
+        <div class="empty-icon">🛍️</div>
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added anything to your bag yet.</p>
+        <a href="{% url 'home' %}" class="checkout-button" style="width:auto;padding:0 30px;display:inline-flex;">
+            Start Shopping
+        </a>
+    </div>
+
+    {% endif %}
+
+</main>
+
+
+<script>
+/* Image fallback */
+var FALLBACK = "https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=300&q=80";
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("img").forEach(function(img) {
+        img.addEventListener("error", function() {
+            if (!this.dataset.fb) { this.dataset.fb = "1"; this.src = FALLBACK; }
+        });
+    });
+});
+
+/* Auto hide messages */
+setTimeout(function() {
+    document.querySelectorAll(".site-message").forEach(function(m) {
+        m.style.opacity = "0";
+        setTimeout(function() { m.remove(); }, 400);
+    });
+}, 4000);
+</script>
+
+</body>
+</html>

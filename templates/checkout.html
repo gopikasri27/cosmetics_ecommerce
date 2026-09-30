@@ -1,0 +1,297 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Checkout - Complete your order at Glow &amp; Grace">
+    <title>Checkout | Glow &amp; Grace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<header class="simple-header">
+    <a href="{% url 'home' %}" class="simple-logo">Glow &amp; <span>Grace</span></a>
+    <span style="font-size:13px;color:#666;">🔒 Secure Checkout</span>
+</header>
+
+
+<!-- MESSAGES -->
+
+{% if messages %}
+<div class="message-container">
+    {% for message in messages %}
+    <div class="site-message {{ message.tags }}">
+        <span>{{ message }}</span>
+        <button type="button" onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<!-- PAGE TITLE -->
+
+<div class="page-title">
+    <p class="eyebrow">CHECKOUT</p>
+    <h1>Complete Your Order</h1>
+</div>
+
+
+<!-- CHECKOUT FORM -->
+
+<main class="checkout-page">
+
+    <form method="post" id="checkoutForm">
+
+        {% csrf_token %}
+
+        <div class="checkout-layout">
+
+
+            <!-- ============================
+                 LEFT: DELIVERY + PAYMENT
+            ============================ -->
+
+            <div class="checkout-left">
+
+
+                <!-- DELIVERY ADDRESS -->
+
+                <section class="checkout-card">
+
+                    <h2>1. Delivery Address</h2>
+
+                    <div class="form-grid">
+
+                        <div class="form-field full">
+                            <label for="id_full_name">Full Name *</label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}
+                            <span class="form-errors">{{ form.full_name.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="id_email">Email Address *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                            <span class="form-errors">{{ form.email.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="id_phone">Phone Number *</label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                            <span class="form-errors">{{ form.phone.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field full">
+                            <label for="id_address">Address *</label>
+                            {{ form.address }}
+                            {% if form.address.errors %}
+                            <span class="form-errors">{{ form.address.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="id_city">City *</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                            <span class="form-errors">{{ form.city.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="id_state">State *</label>
+                            {{ form.state }}
+                            {% if form.state.errors %}
+                            <span class="form-errors">{{ form.state.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+                            <label for="id_pincode">PIN Code *</label>
+                            {{ form.pincode }}
+                            {% if form.pincode.errors %}
+                            <span class="form-errors">{{ form.pincode.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- PAYMENT METHOD -->
+
+                <section class="checkout-card">
+
+                    <h2>2. Payment Method</h2>
+
+                    <div class="payment-options">
+
+                        <label class="payment-option" id="label-cod">
+                            <input type="radio" name="payment_method" value="COD" checked id="pay-cod">
+                            <span>
+                                <strong>💵 Cash on Delivery</strong>
+                                <small>Pay when your order arrives</small>
+                            </span>
+                        </label>
+
+                        <label class="payment-option" id="label-upi">
+                            <input type="radio" name="payment_method" value="UPI" id="pay-upi">
+                            <span>
+                                <strong>📱 UPI</strong>
+                                <small>Google Pay / PhonePe / Paytm</small>
+                            </span>
+                        </label>
+
+                        <label class="payment-option" id="label-card">
+                            <input type="radio" name="payment_method" value="CARD" id="pay-card">
+                            <span>
+                                <strong>💳 Credit / Debit Card</strong>
+                                <small>Visa / Mastercard / RuPay</small>
+                            </span>
+                        </label>
+
+                    </div>
+
+                    <p class="payment-note" id="paymentNote">
+                        ✅ You will pay when your order is delivered.
+                    </p>
+
+                </section>
+
+
+            </div>
+
+
+            <!-- ============================
+                 RIGHT: ORDER SUMMARY
+            ============================ -->
+
+            <aside class="checkout-summary">
+
+                <h2>Order Summary</h2>
+
+                {% for item in cart_items %}
+                <div class="checkout-product">
+                    <div>
+                        <strong>{{ item.product.name }}</strong>
+                        <small>{{ item.product.category.name }} &nbsp;·&nbsp; Qty: {{ item.quantity }}</small>
+                    </div>
+                    <span>₹{{ item.total }}</span>
+                </div>
+                {% endfor %}
+
+                <hr style="border:none;border-top:1px solid #ececec;margin:14px 0;">
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <strong>₹{{ subtotal }}</strong>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <strong>
+                        {% if delivery_fee == 0 %}
+                        <span style="color:#2d6a4f;">FREE</span>
+                        {% else %}
+                        ₹{{ delivery_fee }}
+                        {% endif %}
+                    </strong>
+                </div>
+
+                {% if discount %}
+                <div class="summary-row discount-row">
+                    <span>Discount</span>
+                    <strong>− ₹{{ discount }}</strong>
+                </div>
+                {% endif %}
+
+
+                <!-- COUPON -->
+
+                <div class="coupon-box">
+                    <label for="id_coupon">Have a coupon code?</label>
+                    {{ form.coupon }}
+                    {% if form.coupon.errors %}
+                    <span class="form-errors">{{ form.coupon.errors|join:", " }}</span>
+                    {% endif %}
+                    <small>Try: GLOW10 (10% off) or BEAUTY200 (max ₹200 off)</small>
+                </div>
+
+                <div class="summary-note" style="margin-top:0;">
+                    🚚 Free delivery on orders above ₹999
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong>₹{{ total }}</strong>
+                </div>
+
+                <button type="submit" class="place-order-button">
+                    Place Order
+                </button>
+
+                <p class="secure-text">🔒 Your information is securely processed.</p>
+
+                <a href="{% url 'cart' %}" class="continue-shopping-btn" style="margin-top:10px;">
+                    ← Back to Cart
+                </a>
+
+            </aside>
+
+        </div>
+
+    </form>
+
+</main>
+
+
+<script>
+/* Payment option highlight */
+var payOptions = document.querySelectorAll('.payment-option');
+var payNote = document.getElementById('paymentNote');
+
+var notes = {
+    'COD': '✅ You will pay when your order is delivered.',
+    'UPI': '⚠️ UPI payment gateway coming soon. Your order will be saved for confirmation.',
+    'CARD': '⚠️ Card payment gateway coming soon. Your order will be saved for confirmation.'
+};
+
+payOptions.forEach(function(opt) {
+    var radio = opt.querySelector('input[type="radio"]');
+    radio.addEventListener('change', function() {
+        payOptions.forEach(function(o) { o.style.borderColor = '#e0e0e0'; o.style.background = ''; });
+        opt.style.borderColor = '#1a1a1a';
+        opt.style.background = '#fafafa';
+        if (payNote) payNote.textContent = notes[radio.value] || '';
+    });
+});
+
+/* Highlight COD by default */
+var codLabel = document.getElementById('label-cod');
+if (codLabel) { codLabel.style.borderColor = '#1a1a1a'; codLabel.style.background = '#fafafa'; }
+
+/* Auto hide messages */
+setTimeout(function() {
+    document.querySelectorAll('.site-message').forEach(function(m) {
+        m.style.opacity = '0';
+        setTimeout(function() { m.remove(); }, 400);
+    });
+}, 4000);
+</script>
+
+</body>
+</html>
